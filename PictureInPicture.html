@@ -1,0 +1,107 @@
+<!Doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Picture in Picture</title>
+    <link rel="icon" type="image/png" href="https://www.google.com/s2/u/0/favicons?domain=https://tv.google/intl/en_ca/">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<style>
+
+@import url('https://fonts.googleapis.com/css2?family=Anton&display=swap');
+
+html {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: rgb(37, 37, 37);
+}
+
+.button-container {
+    border: 2px solid black;
+    padding: 10px;
+    border-radius: 7px;
+    box-shadow: inset 0 20px 4px -19px rgba(255, 255, 255, 0.7);
+}
+
+button {
+    cursor: pointer;
+    outline: none;
+    width: 120px;
+    height: 75px;
+    font-family: Anton, sans-serif;
+    font-size: 25px;
+    color: white;
+    text-shadow: 0 2px 5px black;
+    background: linear-gradient(to top, #696969, #575757);
+    border: 2px solid black;
+    border-radius: 7px;
+    box-shadow: inset 0 20px 4px -19px rgba(255, 255, 255, 0.4), 0 12px 12px 0 rgba(0, 0, 0, 0.3);
+}
+
+button:hover {
+    background: linear-gradient(to bottom, #696969, #575757);
+}
+
+button:active {
+    transform: translateY(3px);
+    box-shadow: 0 6px 6px 0 rgba(0, 0, 0, 0.3);
+}
+
+</style>
+
+<body>
+    <!-- Video -->
+    <video id="video" controls height="360" width="640" hidden></video>
+    <!-- Button -->
+    <div class="button-container">
+        <button id="button">PICTURE in PICTURE</button>
+    </div>
+    <!-- Script -->
+    <script src="script.js"></script>
+
+<script>
+
+const videoElement = document.getElementById('video');
+const button = document.getElementById('button');
+
+
+// Prompt to select media stream, pass to video element, then play
+async function selectMediaStream() {
+    try {
+        const mediaStream = await navigator.mediaDevices.getDisplayMedia();
+        videoElement.srcObject = mediaStream;
+        videoElement.onloadedmetadata = async () => {
+            await videoElement.play();
+            // Now that the video is playing, request Picture in Picture
+            await videoElement.requestPictureInPicture();
+        };
+    } catch (error) {
+        // Catch Error Here
+        console.log('error!', error);
+    }
+}
+
+
+button.addEventListener('click', async () => {
+    // Disable Button
+    button.disabled = true;
+    // Start Picture in Picture
+    selectMediaStream();
+    // Reset Button
+    button.disabled = false;
+});
+
+</script>
+
+</body>
+
+</html>
